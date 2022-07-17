@@ -18,3 +18,10 @@ unless-stopped – This functions similarly to always. The difference is that Do
 Disk usage
 docker system df
 docker system df -v
+
+Docker build:
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install -y nginx
+COPY index.nginx-debian.html /var/www/html
+CMD nginx -g 'daemon off;'
