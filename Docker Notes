@@ -1,0 +1,20 @@
+Docker is a technology designed to make it easier to create, deploy, and run applications by using containers.
+
+Docker is an open platform, once we build a docker container, we can run it anywhere, say it windows, Linux, mac whether on a laptop, data center, or in the cloud.
+
+Docker Image is a file that contains all the necessary dependency and configurations which are required to run an application.
+
+Docker Containers is basically a running instance of an image.
+
+By default Docker containers can make connections to the outside world, but the outside world cannot connect to containers.
+
+We can specify the restart policy by using the --restart flag with docker run command.
+
+no – This policy will never automatically start a container. This is the default policy for all containers created with docker run.
+always – Docker will ensure the container is always running. If the container stops, it will be immediately restarted. You can still manually stop the container with docker stop but Docker will bring it back up next time the daemon restarts.
+on-failure – The container will get restarted if it stops because of an error. Docker won’t bring the container up after the daemon restarts.
+unless-stopped – This functions similarly to always. The difference is that Docker won’t ever restart the container if it has been manually stopped.
+
+Disk usage
+docker system df
+docker system df -v
