@@ -1,0 +1,21 @@
+ Initialize the Swam Manager [Run this from swam01 server]
+
+ifconfig eth0
+docker swarm init --advertise-addr 142.93.214.57
+Verify the Node status
+
+docker node ls
+
+Example
+192.168.227.129
+
+[root@ans_master ~]# docker swarm init --advertise-addr 192.168.227.129
+Swarm initialized: current node (8bhgm2m6ze68hbqm4wx51kb58) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-1vav9z370syiw9xni36t6b3isb60j9u34m4t1eoapziz3gkt4z-dqdgms5ppl5m0t0lmzncsu0ef 192.168.227.129:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+
