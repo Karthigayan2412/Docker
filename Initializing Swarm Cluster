@@ -18,4 +18,15 @@ To add a worker to this swarm, run the following command:
 
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 
+[root@ans_cli2 yum.repos.d]# docker swarm join --token SWMTKN-1-1vav9z370syiw9xni36t6b3isb60j9u34m4t1eoapziz3gkt4z-dqdgms5ppl5m0t0lmzncsu0ef 192.168.227.129:2377
+This node joined a swarm as a worker.
+[root@ans_cli2 yum.repos.d]#
+
+[root@ans_cli2 yum.repos.d]# docker swarm join --token SWMTKN-1-1vav9z370syiw9xni36t6b3isb60j9u34m4t1eoapziz3gkt4z-dqdgms5ppl5m0t0lmzncsu0ef 192.168.227.129:2377
+This node joined a swarm as a worker.
+[root@ans_cli2 yum.repos.d]#
+
+
+
+
 
