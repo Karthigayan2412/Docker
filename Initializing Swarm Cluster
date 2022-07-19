@@ -26,6 +26,14 @@ This node joined a swarm as a worker.
 This node joined a swarm as a worker.
 [root@ans_cli2 yum.repos.d]#
 
+[root@ans_master yum.repos.d]# docker node ls
+ID                            HOSTNAME     STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+tabyx9huc2nzvv3wxhx9xxz1z     ans_cli2     Ready     Active                          20.10.17
+d7f9ziqxd9vtw4qgbo5x97c40     ans_client   Ready     Active                          1.13.1
+8bhgm2m6ze68hbqm4wx51kb58 *   ans_master   Ready     Active         Leader           20.10.8
+[root@ans_master yum.repos.d]#
+
+
 
 
 
