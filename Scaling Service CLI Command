@@ -1,0 +1,54 @@
+Scaling Up Operation
+
+docker service scale webserver=5
+
+Scaling Down Operation
+
+docker service scale webserver=1
+
+Verify Service Details:
+
+docker service ps webserver
+
+Remove Service After Practical:
+
+docker service rm webserver
+
+[root@ans_master ~]# docker service create --name webserver --replicas 1 nginx
+tkav1n9zoqedg1xmf0b88wn1i
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master ~]# docker service scale webserver=5
+webserver scaled to 5
+overall progress: 5 out of 5 tasks
+1/5: running   [==================================================>]
+2/5: running   [==================================================>]
+3/5: running   [==================================================>]
+4/5: running   [==================================================>]
+5/5: running   [==================================================>]
+verify: Service converged
+[root@ans_master ~]# docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED              STATUS              PORTS     NAMES
+5c8fd2e65228   nginx:latest   "/docker-entrypoint.…"   34 seconds ago       Up 32 seconds       80/tcp    webserver.2.w32gsmv3d54pnrnya7r37oglm
+883a0a37e6bd   nginx:latest   "/docker-entrypoint.…"   About a minute ago   Up About a minute   80/tcp    webserver.1.repr8d6rppddu3sdcd7uprf0a
+
+[root@ans_master ~]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE                ERROR     PORTS
+repr8d6rppdd   webserver.1   nginx:latest   ans_master   Running         Running about a minute ago
+w32gsmv3d54p   webserver.2   nginx:latest   ans_master   Running         Running 48 seconds ago
+e7t7joekgr9r   webserver.3   nginx:latest   ans_cli2     Running         Running 23 seconds ago
+rijvnv4mpvjc   webserver.4   nginx:latest   ans_client   Running         Running 29 seconds ago
+du2vxzf47o2j   webserver.5   nginx:latest   ans_client   Running         Running 30 seconds ago
+
+[root@ans_master ~]# docker service scale webserver=1
+webserver scaled to 1
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+[root@ans_master ~]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+repr8d6rppdd   webserver.1   nginx:latest   ans_master   Running         Running 2 minutes ago
+rijvnv4mpvjc   webserver.4   nginx:latest   ans_client   Remove          Running 14 seconds ago
+du2vxzf47o2j   webserver.5   nginx:latest   ans_client   Remove          Running 14 seconds ago
