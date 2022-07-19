@@ -1,0 +1,204 @@
+Every Docker container is based on an image.
+
+Till now we have been using images that were created by others and available in Docker Hub.
+
+Docker can build images automatically by reading the instructions from a Dockerfile
+
+A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image.
+
+A Dockerfile must start with a FROM` instruction.
+The FROM instruction specifies the Base Image from which you are building.
+
+
+There are multiple INSTRUCTIONS that are available in Dockerfile, some of these include:
+
+FROM
+RUN
+CMD
+LABEL
+EXPOSE
+
+Difference between COPY and ADD
+
+COPY takes in an src and destination. It only lets you copy in a local file or directory from your host
+
+ADD lets you do that too, but it also supports 2 other sources.
+ 
+First, you can use a URL instead of a local file/directory. 
+Secondly, you can extract a tar file from the source directly into the destination
+
+EXPOSE Instruction
+
+The EXPOSE instruction informs Docker that the container listens on the specified network ports at runtime.
+
+The EXPOSE instruction does not actually publish the port. 
+
+It functions as a type of documentation between the person who builds the image and the person who runs the container, about which ports are intended to be published.
+
+
+HEALTHCHECK Instruction
+
+HEALTHCHECK instruction Docker allows us to tell the platform on how to test that our application is healthy.
+
+When Docker starts a container, it monitors the process that the container runs. If the process ends, the container exits. 
+
+That's just a basic check and does not necessarily tell the detail about the application.
+
+We can specify certain options before the CMD operation, these includes:
+
+HEALTHCHECK --interval=5s CMD ping -c 1 172.17.0.2
+
+--interval=DURATION (default: 30s)
+--timeout=DURATION (default: 30s)
+--start-period=DURATION (default: 0s)
+--retries=N (default: 3)
+
+ENTRYPOINT Instruction
+
+The best use for ENTRYPOINT is to set the image’s main command
+
+ENTRYPOINT doesn’t allow you to override the command.
+
+It is important to understand the distinction between CMD and ENTRYPOINT.
+
+
+Sample Code Snippet:
+
+FROM ubuntu
+ENTRYPOINT ["top", "-b"]
+CMD ["-c"]
+
+The WORKDIR instruction sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow it in the Dockerfile
+ENV Instruction
+
+The ENV instruction sets the environment variable <key> to the value <value>.
+
+Example Snippet:
+
+ENV NGINX 1.2
+RUN curl -SL http://example.com/web-$NGINX.tar.xz
+RUN tar -xzvf web-$NGINX.tar.xz
+
+You can use -e, --env, and --env-file flags to set simple environment variables in the container you’re running or overwrite variables that are defined in the Dockerfile of the image you’re running.
+
+Example Snippet:
+
+
+docker run --env VAR1=value1 --env VAR2=value2 ubuntu env | grep VAR
+
+Docker tags convey useful information about a specific image version/variant.
+
+They are aliases to the ID of your image which often look like this: 8f5487c8b942
+
+Docker Commit
+
+Whenever you make changes inside the container, it can be useful to commit a container’s file changes or settings into a new image.
+
+By default, the container being committed and its processes will be paused while the image is committed.
+
+Syntax:
+
+docker container commit CONTAINER-ID myimage01
+
+The --change option will apply Dockerfile instructions to the image that is created. 
+
+Supported Dockerfile instructions:
+
+CMD | ENTRYPOINT | ENV | EXPOSE
+LABEL | ONBUILD | USER | VOLUME | WORKDIR
+
+ Docker Image Layers 
+
+A Docker image is built up from a series of layers. 
+
+Each layer represents an instruction in the image’s Dockerfile.
+
+Difference Between Docker Containers and Docker Image
+
+The major difference between a container and an image is the top writable layer.
+
+All writes to the container that adds new or modifies existing data are stored in this writable layer. 
+
+Managing Images with CLI
+
+Docker CLI can be used to manage various aspects related to Docker Images which include building, removing, saving, tagging, and others.
+
+We should be familiar with the docker image child-commands
+
+Here are some of the sample commands that are available.
+
+docker image build
+docker image history
+docker image import
+docker image inspect
+docker image load
+docker image ls
+docker image prune
+docker image pull
+docker image push
+
+ Inspecting Docker Images
+
+A Docker Image contains lots of information, some of these  include:
+
+Creation Date
+Command
+Environment Variables
+Architecture
+OS
+Size
+
+docker image inspect command allows us to see all the information associated with a docker image.
+
+Pruning Images
+
+docker image prune command allows us to clean up unused images.
+
+By default, the above command will only clean up dangling images.
+
+Dangling Images = Image without Tags and Image not referenced by any container
+
+Flattening Docker Images
+
+In a generic scenario, the more the layers an image has, the more the size of the image.
+
+Some of the image sizes go from 5GB to 10GB.
+
+Flattening an image to a single layer can help reduce the overall size of the image.
+
+ Docker Registry
+
+A Registry a stateless, highly scalable server-side application that stores and lets you distribute Docker images.
+
+Docker Hub is the simplest example that all of us must have used.
+
+There are various types of registry available, which includes:
+
+Docker Registry
+Docker Trusted Registry
+Private Repository (AWS ECR)
+Docker Hub
+
+Moving Images Across Hosts
+The docker save command will save one or more images to a tar archive
+
+Example Snippet:
+
+docker save busybox > busybox.tar 
+
+The docker load command will load an image from a tar archive
+
+
+Example Snippet:
+
+docker load < busybox.tar 
+
+Build Cache
+
+Docker creates container images using layers. 
+
+Each command that is found in a Dockerfile creates a new layer.
+
+Docker uses a layer cache to optimize the process of building Docker images and make it faster.
+
+
