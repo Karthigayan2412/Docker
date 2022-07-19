@@ -1,0 +1,70 @@
+Change the Node Availability to Drain
+
+docker node update --availability drain swarm03
+
+Verify Node status
+
+docker node ls
+
+Change the Node Availability To Active
+
+docker node update --availability active swarm03
+
+[root@ans_master ~]# docker service create --name Webserver --mode global -dt nginx
+lqovztbru54kzw36lgdg3dp0t
+
+[root@ans_master ~]# docker service ps Webserver
+ID             NAME                                  IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+r5d4hpwniz6c   Webserver.8bhgm2m6ze68hbqm4wx51kb58   nginx:latest   ans_master   Running         Running 10 seconds ago
+1yme7yjjmsrq   Webserver.d7f9ziqxd9vtw4qgbo5x97c40   nginx:latest   ans_client   Running         Running 10 seconds ago
+juxvkubpe81w   Webserver.tabyx9huc2nzvv3wxhx9xxz1z   nginx:latest   ans_cli2     Running         Running 10 seconds ago
+[root@ans_master ~]# clear
+
+[root@ans_master ~]# docker node update --availability drain ans_client
+ans_client
+[root@ans_master ~]# docker node ls
+ID                            HOSTNAME     STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+tabyx9huc2nzvv3wxhx9xxz1z     ans_cli2     Ready     Active                          20.10.17
+d7f9ziqxd9vtw4qgbo5x97c40     ans_client   Ready     Drain                           1.13.1
+8bhgm2m6ze68hbqm4wx51kb58 *   ans_master   Ready     Active         Leader           20.10.8
+
+[root@ans_master ~]# docker node update --availability active  ans_client
+ans_client
+[root@ans_master ~]# docker node ls
+ID                            HOSTNAME     STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+tabyx9huc2nzvv3wxhx9xxz1z     ans_cli2     Ready     Active                          20.10.17
+d7f9ziqxd9vtw4qgbo5x97c40     ans_client   Ready     Active                          1.13.1
+8bhgm2m6ze68hbqm4wx51kb58 *   ans_master   Ready     Active         Leader           20.10.8
+[root@ans_master ~]#
+
+
+[root@ans_master ~]# docker service create --name webserver --replicas 1 nginx
+v0vr3wnttj9k5l8iuunhg3j5f
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master ~]# docker node ls
+ID                            HOSTNAME     STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+tabyx9huc2nzvv3wxhx9xxz1z     ans_cli2     Ready     Active                          20.10.17
+d7f9ziqxd9vtw4qgbo5x97c40     ans_client   Ready     Active                          1.13.1
+8bhgm2m6ze68hbqm4wx51kb58 *   ans_master   Ready     Drain          Leader           20.10.8
+
+[root@ans_master ~]# docker service ps webserver
+ID             NAME              IMAGE          NODE         DESIRED STATE   CURRENT STATE                     ERROR     PORTS
+4ov23bov1eln   webserver.1       nginx:latest   ans_client   Running         Running less than a second ago
+j5asr7ldbi1z    \_ webserver.1   nginx:latest   ans_master   Shutdown        Shutdown less than a second ago
+
+[root@ans_master ~]# docker node update --availability active ans_master
+ans_master
+[root@ans_master ~]# docker node ls
+ID                            HOSTNAME     STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+tabyx9huc2nzvv3wxhx9xxz1z     ans_cli2     Ready     Active                          20.10.17
+d7f9ziqxd9vtw4qgbo5x97c40     ans_client   Ready     Active                          1.13.1
+8bhgm2m6ze68hbqm4wx51kb58 *   ans_master   Ready     Active         Leader           20.10.8
+
+[root@ans_master ~]# docker service ps webserver
+ID             NAME              IMAGE          NODE         DESIRED STATE   CURRENT STATE                 ERROR     PORTS
+4ov23bov1eln   webserver.1       nginx:latest   ans_client   Running         Running about a minute ago
+j5asr7ldbi1z    \_ webserver.1   nginx:latest   ans_master   Shutdown        Shutdown about a minute ago
+
