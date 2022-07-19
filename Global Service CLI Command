@@ -1,0 +1,30 @@
+Global Service
+
+docker service create --name antivirus --mode global -dt ubuntu
+
+docker service ps antivirus
+
+Replicated Service
+
+docker service create --name myreplica --replicas 1 nginx
+
+[root@ans_master ~]# docker service create --name webserver --replicas 1 nginx
+m8iog17vmxzyaa5kn7mbppoxm
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+[root@ans_master ~]# docker service create --name Antivirus --mode global -dt ubuntu
+ct0yzeg8b3juetlo7z97rj98f
+
+[root@ans_master ~]# docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE           PORTS
+ct0yzeg8b3ju   Antivirus   global       3/3        ubuntu:latest
+m8iog17vmxzy   webserver   replicated   1/1        nginx:latest
+[root@ans_master ~]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE                ERROR     PORTS
+2adey1f2bgt1   webserver.1   nginx:latest   ans_master   Running         Running about a minute ago
+[root@ans_master ~]# docker service ps Antivirus
+ID             NAME                                  IMAGE           NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+rk5lt0qdfz0w   Antivirus.8bhgm2m6ze68hbqm4wx51kb58   ubuntu:latest   ans_master   Running         Running 35 seconds ago
+kki9l3li74ff   Antivirus.d7f9ziqxd9vtw4qgbo5x97c40   ubuntu:latest   ans_client   Running         Running 16 seconds ago
+vyh4xnp0ui0u   Antivirus.tabyx9huc2nzvv3wxhx9xxz1z   ubuntu:latest   ans_cli2     Running         Running 17 seconds ago
