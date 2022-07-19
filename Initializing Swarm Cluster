@@ -34,6 +34,35 @@ d7f9ziqxd9vtw4qgbo5x97c40     ans_client   Ready     Active                     
 [root@ans_master yum.repos.d]#
 
 
+Create a new docker service:
+
+docker service create --name webserver --replicas 1 nginx
+
+Verify service status:
+
+docker service ps webserver
+
+[root@ans_master yum.repos.d]# docker service create --name webserver --replicas 1 nginx
+olj2yv8tpt5snnwahiq5gh0vf
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master yum.repos.d]# docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE          PORTS
+olj2yv8tpt5s   webserver   replicated   1/1        nginx:latest
+[root@ans_master yum.repos.d]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+wuhyo3446kdi   webserver.1   nginx:latest   ans_master   Running         Running 56 seconds ago
+[root@ans_master yum.repos.d]#
+
+[root@ans_master yum.repos.d]# docker service ps webserver
+ID             NAME              IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR                              PORTS
+rc4oejisq19z   webserver.1       nginx:latest   ans_client   Running         Running 3 minutes ago
+m9n5t64r1kzp    \_ webserver.1   nginx:latest   ans_master   Shutdown        Complete 3 minutes ago
+qyz319ojl64p    \_ webserver.1   nginx:latest   ans_master   Shutdown        Complete 3 minutes ago
+4ngrk1n0zgbj    \_ webserver.1   nginx:latest   ans_master   Shutdown        Complete 4 minutes ago
+cjnd3q3rjn2e    \_ webserver.1   nginx:latest   ans_client   Shutdown        Failed 15 minutes ago    "No such container: webserver.…"
 
 
 
