@@ -1,0 +1,85 @@
+ Multiple Approaches for Scaling
+ 
+ Two Approaches:
+
+docker service scale service01=1
+docker service update --replicas 1 service02
+Scaling Multiple Services Together:
+
+docker service scale service01=3 service02=3
+
+[root@ans_master ~]# docker service create --name webserver --replicas 1 nginx
+x5yi7yectpffbh2obrd5bwauq
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+[root@ans_master ~]# docker service create --name service --replicas 1 nginx
+tx1t7scgq7el6lgdlnstpycyv
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master ~]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE           ERROR     PORTS
+cb9wx64peqw6   webserver.1   nginx:latest   ans_master   Running         Running 2 minutes ago
+[root@ans_master ~]#
+[root@ans_master ~]# docker service scale webserver=5
+webserver scaled to 5
+overall progress: 5 out of 5 tasks
+1/5: running   [==================================================>]
+2/5: running   [==================================================>]
+3/5: running   [==================================================>]
+4/5: running   [==================================================>]
+5/5: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master ~]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+cb9wx64peqw6   webserver.1   nginx:latest   ans_master   Running         Running 2 minutes ago
+jk48mqexj4nm   webserver.2   nginx:latest   ans_master   Running         Running 19 seconds ago
+3movsqetq2za   webserver.3   nginx:latest   ans_cli2     Running         Running 19 seconds ago
+4k6sjjiiu8eh   webserver.4   nginx:latest   ans_cli2     Running         Running 19 seconds ago
+wecmuj48smlq   webserver.5   nginx:latest   ans_client   Running         Running 19 seconds ago
+[root@ans_master ~]# docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE          PORTS
+tx1t7scgq7el   service     replicated   1/1        nginx:latest
+x5yi7yectpff   webserver   replicated   5/5        nginx:latest
+[root@ans_master ~]# docker service update --replicas 2 service
+service
+overall progress: 2 out of 2 tasks
+1/2: running   [==================================================>]
+2/2: running   [==================================================>]
+verify: Service converged
+[root@ans_master ~]# docker service ps service
+ID             NAME        IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+uvz5fuvqec69   service.1   nginx:latest   ans_client   Running         Running 3 minutes ago
+ws5pfs5zd5x9   service.2   nginx:latest   ans_master   Running         Running 12 seconds ago
+
+[root@ans_master ~]# docker service scale webserver=1 service=1
+webserver scaled to 1
+service scaled to 1
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+[root@ans_master ~]# docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE          PORTS
+tx1t7scgq7el   service     replicated   1/1        nginx:latest
+x5yi7yectpff   webserver   replicated   2/1        nginx:latest
+[root@ans_master ~]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+cb9wx64peqw6   webserver.1   nginx:latest   ans_master   Running         Running 4 minutes ago
+wecmuj48smlq   webserver.5   nginx:latest   ans_client   Remove          Running 20 seconds ago
+[root@ans_master ~]# docker service ps service
+ID             NAME        IMAGE          NODE         DESIRED STATE   CURRENT STATE           ERROR     PORTS
+uvz5fuvqec69   service.1   nginx:latest   ans_client   Running         Running 4 minutes ago
+
+[root@ans_master ~]# docker service update --replicas 2 webserver service
+"docker service update" requires exactly 1 argument.
+See 'docker service update --help'.
+
+Usage:  docker service update [OPTIONS] SERVICE
+
+Update a service
