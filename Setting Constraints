@@ -1,0 +1,32 @@
+Creating Service with Node Label Constraints
+
+docker service create --name myconstraint --constraint node.labels.region==blr --replicas 3 nginx
+
+Add a Label to Node:
+
+docker node update --label-add region=mumbai swarm03
+
+Running Nodes in Mumbai Region
+
+docker service create --name myconstraint --constraint node.labels.region==mumbai --replicas 3 nginx
+
+[root@ans_master ~]# docker node update --label-add region=blr tabyx9huc2nzvv3wxhx9xxz1z
+tabyx9huc2nzvv3wxhx9xxz1z
+
+[root@ans_master ~]# docker node inspect ans_cli2
+
+3kwkmtkgj2tx8obfr66szlg34
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master ~]# docker service ls
+ID             NAME           MODE         REPLICAS   IMAGE          PORTS
+3kwkmtkgj2tx   myconstraint   replicated   3/3        nginx:latest
+[root@ans_master ~]# docker service ps myconstraint
+ID             NAME             IMAGE          NODE       DESIRED STATE   CURRENT STATE            ERROR     PORTS
+4kwlpe4gb7vp   myconstraint.1   nginx:latest   ans_cli2   Running         Running 48 seconds ago
+c2dosw5b8hkf   myconstraint.2   nginx:latest   ans_cli2   Running         Running 48 seconds ago
+ktm9f6qazvp7   myconstraint.3   nginx:latest   ans_cli2   Running         Running 48 seconds ago
