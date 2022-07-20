@@ -1,0 +1,43 @@
+Create Service with Volume
+
+docker service create --name myservice --mount type=volume,source=myvolume,target=/mypath nginx
+
+Verify the Host where service is created:
+
+docker service ps myservice
+
+Connect to Container and Verify Mount
+
+docker container exec -it [CONTAINER-ID] bash
+ls -l /
+Verify Volume Information
+
+docker volume ls
+
+Remove Service
+
+docker service rm myservice
+
+
+[root@ans_master ~]# docker service create --name myservice --mount type=volume,                                                                                        source=myvolume,target=/mypath nginx
+6qg8ykqycvclgj53zm8pw9oe4
+overall progress: 1 out of 1 tasks
+1/1: running
+verify: Service converged
+[root@ans_master ~]# docker service ps myservice
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+pmp6l2ykbw1k   myservice.1   nginx:latest   ans_master   Running         Running 22 seconds ago
+
+[root@ans_master ~]# docker volume ls
+DRIVER    VOLUME NAME
+local     61b7ff9721fda2e5f081f433d3c86ad11bb2be9fef916be6e33d9287df329b2c
+local     bc57dd3aa423eeb4bcda7f0fd93ab58f71fd395091cca65ecb4a79d80f292dc4
+local     myvolume
+
+[root@ans_master ~]# docker exec -it 8db6e6222601 bash
+
+[root@ans_master _data]# pwd
+/var/lib/docker/volumes/myvolume/_data
+[root@ans_master _data]# ls
+welcome.txt
+[root@ans_master _data]#
