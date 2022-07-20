@@ -1,0 +1,37 @@
+docker swarm update --autolock=true
+systemctl restart docker
+docker node ls
+docker swarm unlock
+To Retrieve Key after swam is unlocked
+
+docker swarm unlock-key
+
+To rotate the key:
+
+docker swarm unlock-key --rotate
+
+[root@ans_master ~]# docker swarm update --autolock=true
+Swarm updated.
+To unlock a swarm manager after it restarts, run the `docker swarm unlock`
+command and provide the following key:
+
+    SWMKEY-1-kw4CWgKEgFFpx9Txv7DY18IW15fDe7ovBKSlra9l9jo
+
+Please remember to store this key in a password manager, since without it you
+will not be able to restart the manager.
+[root@ans_master ~]#
+
+[root@ans_master ~]# systemctl restart docker
+[root@ans_master ~]# docker node ls
+Error response from daemon: Swarm is encrypted and needs to be unlocked before it can be used. Please use "docker swarm unlock" to unlock it.
+[root@ans_master ~]#
+
+[root@ans_master ~]# docker swarm unlock
+Please enter unlock key:
+[root@ans_master ~]# docker node ls
+ID                            HOSTNAME     STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+tabyx9huc2nzvv3wxhx9xxz1z     ans_cli2     Ready     Active                          20.10.17
+d7f9ziqxd9vtw4qgbo5x97c40     ans_client   Unknown   Active                          1.13.1
+8bhgm2m6ze68hbqm4wx51kb58 *   ans_master   Ready     Active         Leader           20.10.8
+[root@ans_master ~]#
+
