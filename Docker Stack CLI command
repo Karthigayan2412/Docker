@@ -1,0 +1,36 @@
+docker-compose.yml
+
+version: '3'
+services:
+  webserver:
+    image: nginx
+    ports:
+       - "8080:80"
+  database:
+    image: redis
+Deploy Stack:
+
+docker stack deploy --compose-file docker-compose.yml mydemo
+
+Remove Stack
+
+docker stack rm mydemo
+
+docker-compose config
+
+[root@ans_master playbook]# docker stack deploy --compose-file docker-compose.yml demo1
+Creating network demo1_default
+Creating service demo1_database
+Creating service demo1_webserver
+
+[root@ans_master playbook]# docker service ls
+ID             NAME              MODE         REPLICAS   IMAGE          PORTS
+ctlvjumykvu7   demo1_database    replicated   1/1        redis:latest
+ll9h2up6ifb2   demo1_webserver   replicated   1/1        nginx:latest   *:8080->80/tcp
+myu2dzqwgeha   demo_database     replicated   1/1        redis:latest
+
+[root@ans_master playbook]# docker service rm demo1_database
+demo1_database
+[root@ans_master playbook]# docker service rm demo1_webserver
+demo1_webserver
+
