@@ -1,0 +1,32 @@
+Create a Service by Publishing port
+
+docker service create --name mywebserver --replicas 1 --publish 8080:80 nginx
+
+Verify Ports in Linux Server
+
+netstat -ntlp
+
+Verify IP address
+
+ifconfig eth0
+
+Curl Request to IP on port 8080
+
+curl 142.93.214.57:8080
+
+[root@ans_master ~]# docker service create --name webserver --replicas 2 --publish 8080:80 nginx
+8q6x9u1dw2n5qyyzjdf65ubc4
+overall progress: 2 out of 2 tasks
+1/2: running   [==================================================>]
+2/2: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master ~]# docker service ps webserver
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+iizb0h5ehmty   webserver.1   nginx:latest   ans_master   Running         Running 26 seconds ago
+je9dqqkiyc87   webserver.2   nginx:latest   ans_master   Running         Running 26 seconds ago
+  
+  [root@ans_master ~]# docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE          PORTS
+8q6x9u1dw2n5   webserver   replicated   2/2        nginx:latest   *:8080->80/tcp
+[root@ans_master ~]#
