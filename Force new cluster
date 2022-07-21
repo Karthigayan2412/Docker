@@ -1,0 +1,21 @@
+docker swarm init --force-new-cluster --advertise-addr 206.189.139.211:2377
+
+[root@ans_master ~]# docker swarm init --force-new-cluster --advertise-addr 192.168.227.129:2377
+Swarm initialized: current node (pugwl7vdctsoe7fa5gyc235ew) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-4vbwhj1i4s8k7js47s1o06uil64l8cqv9ytzpklakf27az8da8-9o8tbuzde6s3p3f5ex8qud0b2 192.168.227.129:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+[root@ans_master ~]# docker service ps webserver
+ID             NAME              IMAGE          NODE         DESIRED STATE   CURRENT STATE            ERROR     PORTS
+x1i69xn3gbb2   webserver.1       nginx:latest   ans_client   Running         Running 21 minutes ago
+byn401j4wmmh   webserver.2       nginx:latest   ans_client   Running         Running 19 minutes ago
+weidu0olemdm    \_ webserver.2   nginx:latest   ans_master   Shutdown        Shutdown 2 minutes ago
+a8oulothch3t   webserver.3       nginx:latest   ans_client   Running         Running 21 minutes ago
+[root@ans_master ~]# docker node ls
+ID                            HOSTNAME     STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+8uvnfnjxamemfy37h4ubsjmct     ans_client   Ready     Active                          1.13.1
+pugwl7vdctsoe7fa5gyc235ew *   ans_master   Ready     Active         Leader           20.10.8
