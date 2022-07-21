@@ -45,4 +45,22 @@ znx3vbmo4yiy   myoverlay.1   nginx:latest   ans_client   Running         Running
 w83tq507zbsr   myoverlay.3   nginx:latest   ans_master   Running         Running about a minute ago
 [root@ans_master ~]#
 
+Tempalte:
+[root@ans_master ~]# docker service create --name myoverlay --hostname={{.Node.Hostname}}-{{.Service.Name}} nginx
+93q6807obsydnt9hkffeb3mto
+overall progress: 1 out of 1 tasks
+1/1: running   [==================================================>]
+verify: Service converged
+[root@ans_master ~]# docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE          PORTS
+93q6807obsyd   myoverlay   replicated   1/1        nginx:latest
+
+[root@ans_master ~]# docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED          STATUS          PORTS     NAMES
+e4706eb2b8b1   nginx:latest   "/docker-entrypoint.…"   18 seconds ago   Up 17 seconds   80/tcp    myoverlay.1.2e2rdp94o2ovbfpqbf7rzd4y0
+[root@ans_master ~]# docker exec -it e4706eb2b8b1 bash
+root@ans_master-myoverlay:/#
+root@ans_master-myoverlay:/#
+
+
 
