@@ -14,3 +14,35 @@ docker container exec -it [CONTAINER-NAME]
 apt-get update && apt-get install iputils-ping
 ping [IP]
 
+[root@ans_master ~]# docker network create -d overlay mynetwork
+dve8jqm8tvapboibt7auxozzd
+[root@ans_master ~]# docker network ls
+NETWORK ID     NAME              DRIVER    SCOPE
+ece548888a97   bridge            bridge    local
+rezkxgfsyjzj   demo1_default     overlay   swarm
+ksj0824wa68b   demo_default      overlay   swarm
+2736386e3c7a   docker_gwbridge   bridge    local
+802fc02ff278   host              host      local
+0xwo7b42hpea   ingress           overlay   swarm
+850c9c03a461   mybridge          bridge    local
+dve8jqm8tvap   mynetwork         overlay   swarm
+bfb988f9ac9a   none              null      local
+[root@ans_master ~]# clear
+[root@ans_master ~]#
+[root@ans_master ~]#
+[root@ans_master ~]# docker service create --name myoverlay --network mynetwork                                                                                         --replicas 3 nginx
+nfyabnoj35eedsk4bw4py1haf
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service converged
+
+[root@ans_master ~]# docker service ps myoverlay
+ID             NAME          IMAGE          NODE         DESIRED STATE   CURRENT STATE                ERROR     PORTS
+znx3vbmo4yiy   myoverlay.1   nginx:latest   ans_client   Running         Running about a minute ago
+5h5vuvdxmcjy   myoverlay.2   nginx:latest   ans_cli2     Running         Running about a minute ago
+w83tq507zbsr   myoverlay.3   nginx:latest   ans_master   Running         Running about a minute ago
+[root@ans_master ~]#
+
+
