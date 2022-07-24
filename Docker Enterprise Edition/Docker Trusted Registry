@@ -1,0 +1,12 @@
+docker run -it --rm docker/dtr install --ucp-node node01 --ucp-username admin --ucp-url https://159.89.168.70 --ucp-insecure-tls
+
+Create a worker node.
+[root@ans_cli2 ~]# docker swarm join --token SWMTKN-1-2a18c3lvjbucp68wsyy5h9y0lvml95j0f7zpdu8p2bhf21qd7p-6aeei4nhdegyledifuul6xq5a 192.168.227.129:2377
+
+[root@ans_master ~]# cat /etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+[root@ans_cli2 ~]# docker run -it --rm docker/dtr install --ucp-node ans_cli2 --ucp-username admin --ucp-url https://192.168.227.129 --ucp-insecure-tls
+
+login https://192.168.227.131/orgs - DTR
