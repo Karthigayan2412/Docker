@@ -1,0 +1,49 @@
+  docker container run --rm -it --name ucp -v /var/run/docker.sock:/var/run/docker.sock docker/ucp:3.1.4 install --host-address 139.59.82.72 --force-minimums
+  
+  Modified the DNS.
+  Open config file sudo nano /etc/resolv.conf and add the following under existing nameservers
+
+nameserver 8.8.8.8
+
+nameserver 8.8.4.4
+
+run following commands to restart daemon and docker service
+
+sudo systemctl daemon-reload
+
+sudo systemctl restart docker
+  
+  [root@ans_master ~]# docker container run --rm -it --name ucp   -v /var/run/docker.sock:/var/run/docker.sock   docker/ucp:2.2.6 install   --host-address 192.168.227.129   --interactive
+INFO[0000] Verifying your system is compatible with UCP 2.2.6 (72d95ccee)
+INFO[0000] Your engine version 20.10.9, build 9b96ce9 (3.10.0-1160.36.2.el7.x86_64) is compatible
+Admin Username: admin
+Admin Password:
+invalid: Admin Password - must be at least 8 characters
+Admin Password:
+invalid: Admin Password - must be at least 8 characters
+Admin Password:
+Confirm Admin Password:
+INFO[0013] Pulling required images... (this may take a while)
+INFO[0013] Pulling docker/ucp-controller:2.2.6
+INFO[0023] Pulling docker/ucp-auth-store:2.2.6
+INFO[0032] Pulling docker/ucp-auth:2.2.6
+INFO[0040] Pulling docker/ucp-hrm:2.2.6
+INFO[0047] Pulling docker/ucp-dsinfo:2.2.6
+INFO[0081] Pulling docker/ucp-compose:2.2.6
+INFO[0092] Pulling docker/ucp-etcd:2.2.6
+INFO[0101] Pulling docker/ucp-swarm:2.2.6
+INFO[0108] Pulling docker/ucp-metrics:2.2.6
+WARN[0119] None of the hostnames we'll be using in the UCP certificates [ans_master 127.0.0.1 172.17.0.1 192.168.227.129] contain a domain component.  Your generated certs may fail TLS validation unless you only use one of these shortnames or IPs to connect.  You can use the --san flag to add more aliases
+
+You may enter additional aliases (SANs) now or press enter to proceed with the above list.
+Additional aliases: Master
+INFO[0011] Establishing mutual Cluster Root CA with Swarm
+INFO[0014] Installing UCP with host address 192.168.227.129 - If this is incorrect, please specify an alternative address with the '--host-address' flag
+INFO[0014] Generating UCP Client Root CA
+INFO[0014] Deploying UCP Service
+INFO[0043] Installation completed on ans_master (node ejb89z8pwo0w6hpm65j28r8tg)
+INFO[0043] UCP Instance ID: 2vfjs5e1d1fufhd75150e5s3b
+INFO[0043] UCP Server SSL: SHA-256 Fingerprint=2D:C5:7B:4D:9E:C6:39:83:E3:35:9F:E6:CC:64:61:08:CD:FC:01:E3:14:95:A1:CB:94:36:30:FF:97:8E:42:5C
+INFO[0043] Login to UCP at https://192.168.227.129:443
+INFO[0043] Username: admin
+INFO[0043] Password: (your admin password)
