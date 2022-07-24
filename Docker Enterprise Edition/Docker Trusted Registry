@@ -10,3 +10,50 @@ nameserver 8.8.4.4
 [root@ans_cli2 ~]# docker run -it --rm docker/dtr install --ucp-node ans_cli2 --ucp-username admin --ucp-url https://192.168.227.129 --ucp-insecure-tls
 
 login https://192.168.227.131/orgs - DTR
+
+Installing DTR:
+
+docker run -it --rm docker/dtr install --ucp-node node01 --ucp-username admin --ucp-url https://159.89.168.70 --ucp-insecure-tls
+
+
+Uninstalling DTR:
+
+docker run -it --rm docker/dtr:2.6.3 destroy --ucp-insecure-tls
+
+[root@ans_cli2 ~]# docker run -it --rm docker/dtr:2.6.3 destroy --ucp-insecure-tls
+Unable to find image 'docker/dtr:2.6.3' locally
+2.6.3: Pulling from docker/dtr
+169185f82c45: Pull complete
+095e866ddbf6: Pull complete
+93e6f2318dad: Pull complete
+53561f0796d5: Pull complete
+5a57d104abaf: Pull complete
+e56d860101d1: Pull complete
+Digest: sha256:949cabe3b2baba30e268edf13943a45671b29a29c2a564936d59aa83b55eeb2f
+Status: Downloaded newer image for docker/dtr:2.6.3
+INFO[0000] Beginning Docker Trusted Registry replica destroy
+ucp-url (The UCP URL including domain and port):
+ucp-url (The UCP URL including domain and port):
+ucp-url (The UCP URL including domain and port): 192.168.227.129:443
+ucp-username (The UCP administrator username): admin
+ucp-password:
+INFO[0035] Validating UCP cert
+INFO[0035] Connecting to UCP
+INFO[0035] health checking ucp
+INFO[0036] Searching containers in UCP for DTR replicas
+INFO[0036] This cluster contains the replicas: 92cfddb3fa12
+Choose a replica to destroy [92cfddb3fa12]:
+INFO[0039] Force removing replica
+INFO[0039] Stopping containers
+INFO[0043] Removing containers
+INFO[0053] Removing volumes
+INFO[0053] Replica removed.
+
+
+Blog to remove DTR entry from UCP:
+
+https://success.docker.com/article/extra-dtr-listed-in-ucp-31x-requiring-removal
+
+INFO[0006] Generated TLS certificate. dnsNames="[*.com *.*.com example.com *.dtr *.*.dtr]" domains="[*.com *.*.com 172.17.0.1 example.com *.dtr *.*.dtr]" ipAddresses="[172.17.0.1]"
+
+
