@@ -1,0 +1,27 @@
+wget https://storebits.docker.com/centos/7/x86_64/stable-20.10/Packages/containerd.io-1.6.6-3.1.el7.x86_64.rpm
+wget https://storebits.docker.com/centos/7/x86_64/stable-20.10/Packages/docker-ee-20.10.9-3.el7.x86_64.rpm
+wget https://storebits.docker.com/centos/7/x86_64/stable-20.10/Packages/docker-ee-cli-20.10.9-3.el7.x86_64.rpm
+wget https://storebits.docker.com/centos/7/x86_64/stable-20.10/Packages/docker-ee-rootless-extras-20.10.12-3.el7.x86_64.rpm
+
+yum install containerd.io-1.6.6-3.1.el7.x86_64.rpm
+yum remove docker-ce
+yum install docker-ee-cli-20.10.9-3.el7.x86_64.rpm
+yum install docker-ee-20.10.9-3.el7.x86_64.rpm
+yum install docker-ee-rootless-extras-20.10.12-3.el7.x86_64.rpm
+systemctl status docker
+systemctl start docker
+systemctl status docker
+
+Alternate Method as per documentation
+
+export DOCKERURL="INSERT-YOUR-URL-HERE"
+ 
+echo "7" > /etc/yum/vars/dockerosversion
+ 
+sudo -E sh -c 'echo "$DOCKERURL/centos" > /etc/yum/vars/dockerurl'
+ 
+yum-config-manager --add-repo $(cat /etc/yum/vars/dockerurl)/docker-ee.repo;
+ 
+yum -y install docker-ee docker-ee-cli containerd.io
+ 
+systemctl start docker
