@@ -1,3 +1,7 @@
 UCP Client Bundle Integration
 curl -sSL https://get.docker.com/ | sh
 docker service create --name mydemoservice nginx
+
+ CPU Limit Commands
+ docker container run -dt --name constraint01 --cpus=1.5 busybox sh
+docker container run -dt --name constraint02 --cpuset-cpus=0,1 busybox sh
