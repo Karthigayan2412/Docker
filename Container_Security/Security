@@ -5,3 +5,26 @@ docker service create --name mydemoservice nginx
  CPU Limit Commands
  docker container run -dt --name constraint01 --cpus=1.5 busybox sh
 docker container run -dt --name constraint02 --cpuset-cpus=0,1 busybox sh
+
+
+docker secret create oracle creds.txt
+docker secret ls
+docker secret inspect oracle
+[root@ans_master ~]# cat creds.txt
+username: oracle
+password: Jio@2428
+docker service create --name secret --secret oracle nginx
+[root@ans_master ~]# docker ps
+CONTAINER ID   IMAGE                         COMMAND                  CREATED         STATUS                   PORTS                                                                             NAMES
+27cdd47b2044   nginx:latest                  "/docker-entrypoint.…"   5 minutes ago   Up 5 minutes             80/tcp                                                                            secret.1.k301toyoggwckef98tj25qatn
+[root@ans_master ~]# docker exec -it secret.1.k301toyoggwckef98tj25qatn bash
+root@27cdd47b2044:/# cd /run/
+root@27cdd47b2044:/run# ls
+lock  nginx.pid  secrets  utmp
+root@27cdd47b2044:/run# cd secrets/
+root@27cdd47b2044:/run/secrets# ls
+oracle
+root@27cdd47b2044:/run/secrets# cat oracle
+username: oracle
+password: Jio@2428
+root@27cdd47b2044:/run/secrets#
