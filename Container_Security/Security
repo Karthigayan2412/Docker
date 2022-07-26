@@ -28,3 +28,6 @@ root@27cdd47b2044:/run/secrets# cat oracle
 username: oracle
 password: Jio@2428
 root@27cdd47b2044:/run/secrets#
+
+Enabling DCT
+export DOCKER_CONTENT_TRUST=1
