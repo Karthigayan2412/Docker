@@ -6,3 +6,16 @@
 Documentation Link :
 
 https://docs.docker.com/storage/storagedriver/select-storage-driver/
+
+ mkdir html
+ cd html
+ echo "hi" >> index.html
+ docker run -dt --name bind3 -v /root/html/:/usr/share/nginx/html/ nginx
+ [root@ans_master ~]# docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+32445d9fac71   nginx     "/docker-entrypoint.…"   25 minutes ago   Up 25 minutes   80/tcp    bind3
+
+ docker inspect bind3 --- to get the container ip
+  [root@ans_master ~]# curl 172.17.0.3
+hi
+
