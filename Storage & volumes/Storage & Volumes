@@ -1,0 +1,111 @@
+A Docker image is built up from a series of layers. 
+
+Storage Driver piece all these things together for you
+
+There are multiple storage drivers available with different trade-offs..
+It is also important for us to understand the copy-on-write (CoW) strategy
+
+Copy on write" means: everyone has a single shared copy of the same data until it's written, and then a copy is made.
+There are various storage drivers available in Docker, these includes:
+
+AUFS
+Device Mapper
+OverlayFS
+ZFS
+VFS
+Brtfs
+Block vs Object Storage
+
+In block storage, the data is stored in terms of blocks
+
+Data stored in blocks are normally read or written entirely a whole block at the same time
+
+Most of the file systems are based on block devices.
+Block Storage:
+
+Every block has an address and the application can be called via SCSI call via its address
+
+There is no storage side meta-data associated with the block except the address.
+
+Thus block has no description, no owner 
+Object Storage:
+
+Object storage is a data storage architecture that manages data as objects as opposed to blocks of storage.
+
+An object is defined as a data (file) along with all its meta-data which is combined together as an object. 
+
+This object is given an ID which is calculated from the content of the object (from the data and metadata ). The application can then call the object with the unique object ID.
+   
+Docker Volumes
+
+3.1 Challenges with files in Container Writable Layer
+
+By default, all files created inside a container are stored on a writable container layer. This means that:
+
+The data doesn’t persist when that container no longer exists, and it can be difficult to get the data out of the container if another process needs it.
+Writing into a container’s writable layer requires a storage driver to manage the filesystem. The storage driver provides a union filesystem, using the Linux kernel. 
+
+This extra abstraction reduces performance as compared to using data volumes, which write directly to the host filesystem.
+ Ideal Approach for Persistent Data
+
+Docker has two options for containers to store files in the host machine, so that the files are persisted even after the container stops: volumes, and bind mounts. 
+
+If you’re running Docker on Linux you can also use a tmpfs mount.
+Important Pointers to Remember:
+
+A given volume can be mounted into multiple containers simultaneously.
+
+When no running container is using a volume, the volume is still available to Docker and is not removed automatically.
+
+When you mount a volume, it may be named or anonymous. Anonymous volumes are not given an explicit name when they are first mounted into a container, so Docker gives them a random name that is guaranteed to be unique within a given Docker host.
+Bind Mount
+
+
+When you use a bind mount, a file or directory on the host machine is mounted into a container.
+
+
+The file or directory is referenced by its full or relative path on the host machine.
+ Automatically Remove Volume on Container Removal
+
+Whenever a container is created with -dt flag and if the main process completes/stops, then it goes into the Exited stage.
+
+We can see list of all containers (Running/Exited) with docker ps -a command
+
+Many a times, containers performs a job and we want container to automatically get deleted once it exits. This can be achieved with the --rm option.
+Device Mapper
+The device mapper is a framework provided by the Linux kernel for mapping physical block devices onto higher-level virtual block devices.
+
+Device mapper works by passing data from a virtual block device, which is provided by the device mapper itself, to another block device.
+       
+
+Device mapper creates logical devices on top of physical block device and provides feature likes :-
+
+
+
+RAID, Encryption, Cache and various others.
+There are two modes for devicemapper storage driver:
+
+i) loop-lvm mode:
+
+Should only be used in testing environment.
+Makes use of loopback mechanism which is generally on the slower side.
+
+ii) direct-lvm mode:
+
+Production hosts using the devicemapper storage driver must use direct-lvm mode.
+This is much more faster then the loop-lvm mode.
+Logging Driver
+
+UNIX and Linux commands typically open three I/O streams when they run, called STDIN, STDOUT, and STDERR
+There are a lot of logging driver options available in Docker, some of these include:
+
+json-file
+none
+syslog
+local
+journald
+splunk
+awslogs
+
+The docker logs command is not available for drivers other than json-file and journald.
+
