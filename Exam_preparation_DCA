@@ -1,0 +1,657 @@
+Docker Certified associate
+Use-Case
+Important Commands
+Scale Swarm Service
+docker service create --name webserver --replicas 1 nginx
+
+
+Draining Swarm Node
+docker node update --availability drain swarm03 
+docker node update --availability active swarm03
+
+
+
+Docker Stack CLI
+docker stack deploy --compose-file docker-compose.yml
+Adding Label To Nodes
+docker node update --label-add region=mumbai worker-node-id
+Placement Constraints
+docker service create --name webserver --constraint node.label.region==blr  nginx
+
+docker service create --name webserver --constraint node.label.region!=blr  nginx
+Adding Label to Node
+docker node update --label-add region=mumbai worker-node-id
+Initialize Swarm
+docker swarm init
+Updating Image of Swarm Service
+docker swarm update --image myimage:tag servicename
+
+Replicated vs Global Service
+
+Replicated service will have N number of containers defined with the --replica flag
+
+Global service will create 1 container in every node of the cluster.
+
+Multiple approaches to scale swarm service
+
+docker service scale allows us to specify multiple services in the same command.
+
+docker service update command only allows us to specify one service per command.
+
+docker service scale mywebserver=5
+docker service update --replicas 5 mywebserver
+Overlay Networks & Security
+
+An overlay network allows containers to spread across different servers to communicate.
+
+The communication between containers can be made secured with IPSec tunnels.
+
+docker network create --opt encrypted --driver overlay my-overlay-secure-network
+
+Troubleshooting Aspect
+
+docker system events provide you real-time even information from your server.
+Service Deployment would be in a pending state if the node is drained.
+Service deployments can also be in a pending state due to placement constraints.
+You can further inspect the task to see more information.
+
+Docker Stack Commands
+Docker Service Command
+Swarm Routing Mesh
+
+Routing mesh enables each node in the swarm to accept connections on published ports for any service running in the swarm, even if there’s no task running on the node.
+
+docker service create --name my_web --replicas 3 --publish published=8080,target=80 nginx
+
+Port 8080 traffic is directed  to 80
+
+Manager and Worker Nodes
+
+Manager Nodes handles cluster management tasks like scheduling services. 
+
+Raft implementation is used to maintain a consistent internal state. 
+
+The sole purpose of worker nodes is to execute containers.
+
+To prevent the scheduler from placing tasks on manager nodes, set the availability for the manager node to Drain 
+Join Tokens in Swarm
+
+Join tokens are secrets that allow a node to join the swarm. 
+
+There are two different join tokens available, one for the worker role and one for the manager role.
+
+
+docker swarm join-token worker
+
+Leaving Swarm Cluster
+
+If a worker intends to leave swarm, he can run the following command:
+
+docker swarm leave
+
+You can use the --force option on a manager to remove it from the swarm. 
+
+Only use --force in situations where the swarm will no longer be used after the manager leaves, such as in a single-node swarm.
+Service Discovery in Swarm
+
+Docker uses embedded DNS to provide service discovery for containers running on a single Docker engine and tasks running in a Docker swarm
+Diskspace Stats in Docker
+
+The docker system df command displays information regarding the amount of disk space used by the docker daemon. 
+System Events in Docker
+
+Use docker system events to get real-time events from the server. These events differ per Docker object type.
+ Inspecting Container 
+
+docker container inspect displays detailed information on one or more containers.
+
+It can also show you a list of volumes that are attached to the container.
+Container vs Virtual Machines
+
+Virtual Machine contains the entire Operating System.
+
+The container uses the resource of the host operating system (primarily the kernel)
+Miscellaneous Pointer
+
+dockerd is a persistent process that manages containers. Docker uses different binaries for the daemon and client. To run the daemon you type dockerd
+
+For specifying the configuration options, you can make use of daemon.json file.
+
+The default location of the configuration file on Linux is /etc/docker/daemon.json
+
+The default location of the configuration file on Windows is %programdata%\docker\config\daemon.json
+DockerFile Instructions
+
+Have a thorough understanding of various Dockerfile instructions.
+
+ADD
+COPY
+RUN
+ENTRYPOINT
+WORKDIR
+ENV
+VOLUMES
+CMD
+HEALTHCHECK      
+Difference ADD vs COPY
+
+COPY allows us to copy files from a local source to a destination.
+ADD allows the same in addition to using URL & extraction capabilities of TAR files.
+Difference between CMD and ENTRYPOINT
+
+
+CMD can be overridden.
+ENTRYPOINT cannot be overridden. 
+Use-Case: Add vs WGET/CURL
+
+Because image size matters, using ADD to fetch packages from remote URLs is strongly discouraged; you should use curl or wget instead.
+
+            ADD http://example.com/big.tar.xz /usr/src/things/
+            RUN tar -xJf /usr/src/things/big.tar.xz -C /usr/src/things
+            RUN make -C /usr/src/things all
+
+          RUN mkdir -p /usr/src/things \
+                 && curl -SL http://example.com/big.tar.xz \
+                 | tar -xJC /usr/src/things \
+                  && make -C /usr/src/things all
+WORKDIR Instruction
+
+The WORKDIR instruction sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow it in the Dockerfile
+
+The WORKDIR instruction can be used multiple times in a Dockerfile
+Format Option
+
+The format option allows us to format the output based on various criteria that we have defined with the command
+
+Filter Option
+
+
+The filter option allows us to filter output based on the condition provided.
+
+Sample Use-Case:
+
+Show all the dangling images
+Show all the images created after the N image.
+Show all the containers which are in the exited stage.
+Accessing in-secure Registries
+
+
+By default, the docker will not allow you to perform the operation with an insecure registry.
+You can override by adding the following stanza within the /etc/docker/daemon.json file
+Pushing an image to a private repository
+
+
+Description
+Commands
+Push Image to Private Repository with DNS name of example.com
+docker tag ubuntu:latest example.com/myrepo:ubuntu
+Login to Private Repository
+docker login example.com
+Searchability Aspects of Images
+docker search nginx
+docker search nginx --filter “is-official=true”
+
+
+
+Save Container State to Image
+docker commit c3f279d17e0a container-image:v2
+Save Container to TAR Archive (Data is also flattened)
+docker export my-container > container.tar
+
+Moving Images Across Hosts
+
+The docker save command will save one or more images to a tar archive
+
+docker save busybox > busybox.tar
+
+
+The docker load command will load an image from a tar archive
+
+docker load < busybox.tar
+ENV Instruction
+The ENV instruction sets the environment variable <key> to the value <value>.
+
+ENV NGINX 1.2
+RUN curl -SL http://example.com/web-$NGINX.tar.xz
+RUN tar -xzvf web-$NGINX.tar.xz
+
+You can use the -e, --env, and --env-file flags to set simple environment variables in the container you’re running or overwrite variables that are defined in the Dockerfile of the image you’re running.
+
+docker run --env VAR1=value1 --env VAR2=value2 ubuntu env | grep VAR
+EXPOSE Instruction
+
+
+The EXPOSE instruction informs Docker that the container listens on the specified network ports at runtime.
+
+The EXPOSE instruction does not actually publish the port. 
+
+It functions as a type of documentation between the person who builds the image and the person who runs the container, about which ports are intended to be published.
+HEALTHCHECK Instruction
+
+
+
+HEALTHCHECK instruction in Docker allows us to tell the platform on how to test that our application is healthy.
+
+HEALTHCHECK CMD curl --fail http://localhost || exit 1
+
+That uses the curl command to make an HTTP request inside the container, which checks that the web app in the container does respond. 
+
+It exits with a 0 if the response is good, or a 1 if not - which tells Docker the container is unhealthy.
+
+ Tagging Docker Images
+
+
+Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+
+Syntax:
+
+docker tag SOURCE_IMAGE[:TAG] TARGET_IMAGE[:TAG]
+
+Example Snippet:
+
+docker tag httpd fedora/httpd:version1.0
+Pruning Docker Images
+
+docker image prune command allows us to clean up unused images.
+
+By default, the above command will only clean up dangling images.
+
+Dangling Images = Image without Tags and Image not referenced by any container
+Downloading Images from Private Repository
+
+
+If your image is available on a private registry which requires login, use the --with-registry-auth flag with docker service create, after logging in.
+
+docker login registry.example.com
+
+docker service  create  --with-registry-auth \--name my_service registry.example.com/acme/my_image:latest
+This passes the login token from your local client to the swarm nodes where the service is deployed, using the encrypted WAL logs. With this information, the nodes are able to log into the registry and pull the image.
+Build Cache
+
+Docker creates container images using layers. 
+
+Each command that is found in a Dockerfile creates a new layer.
+
+Docker uses a layer cache to optimize the process of building Docker images and make it faster.
+DTR Backup Process
+
+When we backup DTR, there are certain things that are not backed.
+
+User/Organization backup should be taken from UCP.
+Namespaces
+
+These namespaces provide a layer of isolation. Each aspect of a container runs in a separate namespace and its access is limited to that namespace.
+
+
+User namespace is not enabled by default
+Control Groups (cgroups)
+
+Control Groups (cgroups) is a Linux kernel feature that limits, accounts for, and isolates the resource usage (CPU, memory, disk I/O, network, etc.) of a collection of processes.
+Reservation and Limits
+
+The limit is a hard limit.
+
+Reservation is a soft limit.
+
+
+docker container run -dt --name container01 --memory-reservation 250m ubuntu
+docker container run -dt --name container02 -m 500m ubuntu
+
+Denoted by      --memory and --memory-reservation
+ Immutable Tags in DTR
+
+By default, users with read and write access can overwrite tags.
+
+To prevent tags from being overwritten, we can configure the repository to be immutable
+DTR Cache
+
+To decrease the time to pull an image, you can deploy DTR caches geographically closer to users.
+
+Caches are transparent to users since users still log in and pull images using the DTR URL address. DTR checks if users are authorized to pull the image, and redirects the request to the cache.
+DTR Garbage Collection
+
+You can configure the Docker Trusted Registry (DTR) to automatically delete unused image layers, thus saving you disk space. 
+
+This process is also known as garbage collection.
+DTR High-Availability
+
+Docker Trusted Registry is designed to scale horizontally as your usage increases. You can add more replicas to make the DTR scale to your demand and for high availability.
+
+If your DTR deployment has multiple replicas, for high availability, you need to ensure all replicas are using the same storage backend.
+HA of UCP And DTR
+
+To have high-availability on UCP and DTR, you need a minimum of:
+
+3 dedicated nodes to install UCP with high availability,
+3 dedicated nodes to install DTR with high availability,
+
+
+You can monitor the status of UCP by using the web UI or the CLI. You can also use the _ping endpoint to build monitoring automation.
+Orchestrator Types in UCP
+
+
+Docker UCP supports both Swarm and Kubernetes.
+
+When you install Docker Enterprise, new nodes are managed by Docker Swarm, but you can change the default orchestrator to Kubernetes in the administrator settings.
+
+To change the orchestrator type for a node from Swarm to Kubernetes:
+
+docker node update --label-add com.docker.ucp.orchestrator.kubernetes=true <node-id>
+Storage Driver in DTR
+
+By default, Docker Trusted Registry stores images on the filesystem of the node where it is running, but you should configure it to use a centralized storage backend.
+
+You can configure DTR to use an external storage backend, for improved performance or high availability.
+The following are the supported storage system:
+
+Some of the supported storage systems in DTR are:
+
+Local:
+NFS
+Bind Mount
+Volume
+Cloud Storage Provider:
+AWS S3
+Azure
+Google Cloud 
+
+ DTR WebHooks
+
+You can configure DTR to automatically post-event notifications to a webhook URL of your choosing
+Bridge Network 
+
+
+The bridge is the default network driver for Docker.
+Host Network
+
+
+This driver removes the network isolation between the docker host and the docker containers to use the host’s networking directly.
+Overlay Network
+
+Default in Swarm.
+Allows containers across host to communicate with each other.
+Communication can be encrypted with --opt encrypted option.
+Do not confuse, -o is same as --opt
+
+You don’t need to create the overlay network on the other nodes, because it will be automatically created when one of those nodes starts running a service task which requires it.
+
+Difference between -p and -P
+
+Publish List (-p) will publish a list of ports that you define. [-p 80:80]
+Publish All (-P) will assign random ports for all exposed ports of the container.
+-P will map the container port to a random port above 32768
+None Network
+
+If you want to completely disable the networking stack on a container, you can use the none network.
+
+This mode will not configure any IP for the container and doesn’t have any access to the external network as well as for other containers.
+
+Configuring Docker for External DNS
+
+Docker Container’s DNS configuration is taken from the host’s /etc/resolv.conf DNS settings for containers be customized via daemon.json file.
+
+   {
+         “dns”: [“8.8.8.8”, “172.31.0.2”]
+  }
+Inspecting Network Details
+
+To Fetch information about a specific network, you can run the following command:
+
+
+docker network inspect <network-name>
+
+UCP Client Bundles
+
+Client bundles are a group of certificates and files downloaded from UCP.
+
+
+Depending on the permission associated with the user, you can now execute docker swarm commands from your remote machine that take effect on the remote cluster.
+Docker Content Trust
+
+Used for interacting with only trusted images (signed images)
+
+Enabled with export DOCKER_CONTENT_TRUST=1
+
+Example Dockerfile:
+
+FROM myubuntu:latest
+RUN apt-get install net-tools
+CMD[“bash”]
+
+If DCT is enabled, the following actions will be blocked:
+
+docker container run of an unsigned or altered image.
+docker pull of an unsigned or altered image.
+docker build where the FROM image is not signed or is not scratch.
+Docker Secrets
+
+
+To create a new secret, docker secret create command can be used.
+
+This is a cluster management command, and must be executed on a swarm manager node.
+
+Remember that you cannot update or rename a secret.
+
+--secret-add and --secret-rm flags for docker service update
+Secrets Mount Path
+
+When you grant a newly-created or running service access to a secret, the decrypted secret is mounted into the container in the following path:
+
+/run/secrets/<secret_name>
+We can also specify a custom location for the secret. 
+
+docker service create --name redis --secret source=mysecret,target=/root/secretdata
+Swarm Auto-Lock
+
+If your Swarm is compromised and if data is stored in plain-text, an attack can get all the sensitive information.
+
+Docker Lock allows us to have control over the keys.
+
+docker swarm update --autolock=true
+Mutual TLS Authentication
+
+When you create a swarm by running docker swarm init, Docker designates itself as a manager node.
+
+By default, the manager node generates a new root Certificate Authority (CA) along with a key pair, which are used to secure communications
+Certificates for Each Node
+
+
+Each time a new node joins the swarm, the manager issues a certificate to the node.
+
+By default, each node in the swarm renews its certificate every three months.
+Privileged Containers
+
+By default, Docker containers are “unprivileged”
+
+When the operator executes docker run --privileged, Docker will enable access to all devices on the to allow the container nearly all the same access to the host as processes running outside containers on the host.
+Roles in UCP
+Mounting Volumes Inside Container
+       
+docker container run -dt --name webserver -v myvolume:/etc busybox sh
+docker container run -dt --name webserver --mount source=myvolume,target=/etc busybox sh
+
+You can even mount the same volume to multiple containers.
+
+Also know what bind mounts are all about 
+How you can map a directory from host to container.
+Remove Volume on Container Exit
+
+If you have not named the volume, then when you specify --rm option, the volumes associated will also be deleted when the container is deleted.
+Device Mapper
+
+loop-lvm mode is for testing purposes only.
+direct-lvm mode can be used in production.
+K8s Pods
+
+A Pod in Kubernetes represents a group of one or more application containers and some shared resources for those containers.
+Deployments
+
+Deployments provide replication functionality with the help of ReplicaSets, along with various additional capability like rolling out of changes, rollback changes if required.
+Rolling Update - Deployment
+
+
+The Deployment updates Pods in a rolling update fashion
+
+Example:
+
+If you update the image of deployment from nginx to apache, not all of the pods in deployments are brought down together.
+
+You can specify maxUnavailable and maxSurge to control the rolling update process
+ConfigMaps
+
+ConfigMaps allow you to decouple configuration artifacts from image content to keep containerized applications portable.
+K8s Secrets
+
+A Secret is an object that contains a small amount of sensitive data such as a password, a token, or a key.
+
+Allows customers to store secrets centrally to reduce the risk of exposure.
+Kubernetes Service
+
+In Kubernetes, a Service is an abstraction which defines a logical set of Pods and a policy by which to access them
+Service Type - Cluster IP
+
+Whenever the service type is ClusterIP, an internal cluster IP address is assigned to the service.
+
+
+Since an internal cluster IP is assigned, it can only be reachable from within the cluster.
+
+
+This is a default ServiceType.
+Service Type - NodePort
+
+
+If the service type is NodePort, then Kubernetes will allocate a port (default: 30000-32767) on every worker node.
+
+Each node will proxy that port into your service. 
+
+Volume in Kubernetes
+       
+One of the benefits of Kubernetes is that it supports multiple types of volumes.
+ Persistent Volumes
+
+
+A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes
+Dynamic Volume Provisioning
+
+
+Dynamic volume provisioning allows storage volumes to be created on-demand
+
+The dynamic provisioning feature eliminates the need for cluster administrators to pre-provision storage. Instead, it automatically provisions storage when it is requested by users.
+Persistent Volume Claim
+
+A PersistentVolumeClaim is a request for the storage by a user.
+
+Within the claim, the user needs to specify the size of the volume along with access mode.
+
+Developer:
+
+I want a volume of size 10 GB which has a speed of Fast for my pod.
+Requests & Limits
+
+Requests and Limits are two ways in which we can control the amount of resource that can be assigned to a pod (resource like CPU and Memory)
+
+Requests:  Guaranteed to get.
+Limits:       Makes sure that the container does not take node resources above a specific value.
+Kubernetes Scheduler decides the ideal node to run the pod depending on the requests and limits.
+If your POD requires 8GB of RAM, however, there are no nodes within your cluster which has 8GB RAM, then your pod will never get scheduled.
+Kubernetes Labels
+
+Labels are key/value pairs that are attached to objects, such as pods.
+
+List nodes within the K8s cluster along with labels:
+
+kubectl get nodes --show-labels
+
+  
+Kubernetes Selectors
+
+Selectors allow us to filter objects based on labels.
+
+Show me all the pods which have a label where env: production
+
+           kubectl get pods -l env=production
+Daemonsets
+
+A DaemonSet can ensure that all Nodes run a copy of a Pod.
+
+As nodes are added to the cluster, Pods are added to them.
+DNS Service for Pods
+
+In Kubernetes, communication can happen via DNS.
+
+For SVC in ns1, POD in the same namespace can communicate with just A. Pod in ns2 namespace can make use of a.ns1 <service.namespace> 
+ Taints and Tolerations
+
+Taints are used to repel the pods from a specific node.
+
+In order to enter the taint worker node, you need a special pass. This is referred to as Toleration.
+Readiness Probe
+
+It can happen that an application is running but temporarily unavailable to serve traffic.
+
+For example, the application is running but it is still loading it’s large configuration files from external vendors.
+
+In such a case, we don’t want to kill the container however we also do not want it to serve the traffic.
+Reclaim Policy
+
+
+PersistentVolumes can have various reclaim policies, including “Retain”, “Recycle”, and “Delete”.
+Expanding PVC
+
+You can only expand a PVC if its storage class allowVolumeExpansion field is set to true.
+
+To request a larger volume for a PVC, edit the PVC object and specify a larger size. This triggers the expansion of the volume that backs the underlying PersistentVolume
+ Storage Classes
+
+A StorageClass provides a way for administrators to describe the "classes" of storage they offer.
+
+Each StorageClass contains the fields provisioner, parameters, and reclaimPolicy, which are used when a PersistentVolume belonging to the class needs to be dynamically provisioned.
+Volume Expansion Steps
+
+Enable Volume Expansion in Storage Class (allowVolumeExpansion: true)
+Resize the PersistentVolumeClaim 
+Restart the POD.
+ Retail Reclaim Policy
+
+When PVC is deleted, the  PersistentVolume still exists and the volume is considered "released".
+
+It is not yet available for another claim because the previous claimant's data remains on the volume.
+       
+You should know the basic steps for reclamation.
+
+Volume vs Persistent Volume
+
+There are two primary types of storage abstractions:
+
+Volume
+Persistent Volume
+
+
+
+Kubernetes volume exists only while the containing pod exists. Once the pod is deleted, the associated volume is also deleted.  Does not exists outside of the pod’s lifecycle. Used for storing temporary data.
+
+
+Kubernetes persistent volumes remain available outside of the pod lifecycle. PV will remain even after the pod is deleted
+Which one among these will be able to determine health check within 1 minute?
+
+
+--interval=30s
+
+--interval=10s --timeout=5s  retries=3
+
+ K8s Namespaces and Selectors
+
+To list the PODS from all the namespaces in Kubernetes, the following commands needs to be used:
+
+
+kubectl get pods --all-namespaces -l env=development
+
+
+Here -l is the selector.
+Multi-Stage Builds
+
+  Multi-Stage builds allow users to use artifacts from one image to another.
+
+
+
+
