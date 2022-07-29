@@ -651,6 +651,68 @@ Here -l is the selector.
 Multi-Stage Builds
 
   Multi-Stage builds allow users to use artifacts from one image to another.
+  
+  Delta - New Important Pointers
+There have been new reported questions within the exam based on the following topics. Please have a read before sitting for the exams.
+
+Note that questions within our practise tests are already updated based on the below topics
+
+1. UCP Audit Logging
+
+Audit logs are a chronological record of security-relevant activities by individual users, administrators or software components that have affected the system. They are focused on external user/agent actions and security rather than understanding the state or events of the system itself.
+
+There are three modes of Audit Logging in UCP: 
+
+none
+Metadata
+Request
+
+
+2. Storage Class Set to Empty Strong ("")
+
+If storageClassName is set to an empty string (‘’) in the PVC, no storage class will be used (i.e.; dynamic provisioning is disabled for this PVC)
+
+Existing, “Available”, PVs (that do not have a specified storageClassName) will be considered for binding to the PVC
+
+If existing PV does not match PVC requirements, then PVC will remain in the unbound state.
+
+3. For Container Process isolation requirements, PID namespace is used.
+
+4. Mounting RO Volume Inside Container
+
+There are multiple ways to mount a volume inside the container.
+
+First Approach:
+ 
+docker run --mount source=volume-name,destination=/path/in/container,readonly my/image
+ 
+Second Approach: 
+ 
+docker run -dt --volume /data:/mydata:ro ubuntu (here /data is the directory in the host)
+ 
+5. Deleting Image from DTR
+
+To completely delete an image (all versions) from DTR, you can easily do that by deleting the entire repository
+
+https://docs.mirantis.com/docker-enterprise/v3.0/dockeree-products/dtr/dtr-user/manage-images/delete-images.html
+
+Additional Miscellaneous Pointers:
+
+1. Versioning of Docker Images
+
+https://adamcod.es/2017/04/21/how-to-tag-version-docker-images.html
+
+2. DTR Garbage Collector
+
+https://docs.docker.com/ee/dtr/admin/configure/garbage-collection/
+
+3. Mutual TLS Authentication
+
+https://docs.docker.com/engine/security/https/
+
+Things to ponder upon:
+
+If a container on startup appeared to be not healthy, how to list historical processes ?
 
 
 
